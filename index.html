@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Learn Past Participle</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            margin-top: 20px;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .question {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .input-field {
+            padding: 10px;
+            margin: 10px;
+            border: 2px solid #007bff;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+
+        .button {
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .button:hover {
+            background-color: #0056b3;
+        }
+
+        .score {
+            margin-top: 10px;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .timer {
+            font-size: 20px;
+            margin-top: 10px;
+        }
+
+        .message {
+            font-size: 22px;
+            font-weight: bold;
+            color: #28a745;
+            margin-top: 20px;
+        }
+
+        .message.error {
+            color: #dc3545;
+        }
+
+        .correct-answer {
+            font-size: 16px;
+            color: #6c757d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Learn Past Participle</h1>
+    <p>Type the correct past participle for each base verb!</p>
+
+    <div class="timer" id="timer">Time Left: 60s</div>
+    <div class="score" id="score">Score: 0</div>
+
+    <div class="container" id="questions-container">
+        <!-- Questions will be dynamically inserted here -->
+    </div>
+
+    <button class="button" onclick="checkAnswers()">Submit Answers</button>
+    <div class="message" id="message"></div>
+
+    <script>
+    const verbs = [
+        { base: "Go", participle: "Gone" },
+        { base: "Eat", participle: "Eaten" },
+        { base: "Write", participle: "Written" },
+        { base: "See", participle: "Seen" },
+        { base: "Take", participle: "Taken" },
+        { base: "Speak", participle: "Spoken" },
+        { base: "Run", participle: "Run" },
+        { base: "Know", participle: "Known" },
+        { base: "Begin", participle: "Begun" },
+        { base: "Break", participle: "Broken" },
+        { base: "Choose", participle: "Chosen" },
+        { base: "Do", participle: "Done" },
+        { base: "Drink", participle: "Drunk" },
+        { base: "Drive", participle: "Driven" },
+        { base: "Fall", participle: "Fallen" },
+        { base: "Fly", participle: "Flown" },
+        { base: "Give", participle: "Given" },
+        { base: "Hide", participle: "Hidden" },
+        { base: "Sing", participle: "Sung" },
+        { base: "Swim", participle: "Swum" },
+        { base: "Be", participle: "Been" },
+        { base: "Become", participle: "Become" },
+        { base: "Begin", participle: "Begun" },
+        { base: "Blow", participle: "Blown" },
+        { base: "Build", participle: "Built" },
+        { base: "Buy", participle: "Bought" },
+        { base: "Catch", participle: "Caught" },
+        { base: "Come", participle: "Come" },
+        { base: "Cut", participle: "Cut" },
+        { base: "Deal", participle: "Dealt" },
+        { base: "Dig", participle: "Dug" },
+        { base: "Feel", participle: "Felt" },
+        { base: "Find", participle: "Found" },
+        { base: "Forget", participle: "Forgotten" },
+        { base: "Get", participle: "Gotten" },
+        { base: "Have", participle: "Had" },
+        { base: "Hear", participle: "Heard" },
+        { base: "Hold", participle: "Held" },
+        { base: "Keep", participle: "Kept" },
+        { base: "Leave", participle: "Left" },
+        { base: "Lose", participle: "Lost" },
+        { base: "Make", participle: "Made" },
+        { base: "Meet", participle: "Met" },
+        { base: "Pay", participle: "Paid" },
+        { base: "Put", participle: "Put" },
+        { base: "Read", participle: "Read" },
+        { base: "Ride", participle: "Ridden" },
+        { base: "Say", participle: "Said" },
+        { base: "Sell", participle: "Sold" },
+        { base: "Send", participle: "Sent" },
+        { base: "Set", participle: "Set" },
+        { base: "Sit", participle: "Sat" },
+        { base: "Stand", participle: "Stood" },
+        { base: "Teach", participle: "Taught" },
+        { base: "Tell", participle: "Told" },
+        { base: "Think", participle: "Thought" },
+        { base: "Throw", participle: "Thrown" },
+        { base: "Understand", participle: "Understood" },
+        { base: "Wear", participle: "Worn" },
+        { base: "Win", participle: "Won" },
+        { base: "Write", participle: "Written" }
+    ];
+
+        let score = 0;
+        let timeLeft = 500;
+        let timerInterval;
+
+        const questionsContainer = document.getElementById('questions-container');
+        const scoreDisplay = document.getElementById('score');
+        const timerDisplay = document.getElementById('timer');
+        const messageDisplay = document.getElementById('message');
+
+        function startGame() {
+            questionsContainer.innerHTML = '';
+            score = 0;
+            timeLeft = 500;
+            updateScore();
+            updateTimer();
+            messageDisplay.textContent = '';
+
+            verbs.forEach((verb, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.innerHTML = `
+                    ${index + 1}. Base Verb: <strong>${verb.base}</strong>
+                    <input type="text" class="input-field" id="answer-${index}" placeholder="Past Participle">
+                    <div class="correct-answer" id="correct-${index}" style="display: none;">Correct Answer: ${verb.participle}</div>
+                `;
+                questionsContainer.appendChild(questionDiv);
+            });
+
+            timerInterval = setInterval(countdown, 1000);
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = `Score: ${score}`;
+        }
+
+        function updateTimer() {
+            timerDisplay.textContent = `Time Left: ${timeLeft}s`;
+        }
+
+        function countdown() {
+            timeLeft--;
+            updateTimer();
+
+            if (timeLeft <= 0) {
+                clearInterval(timerInterval);
+                checkAnswers();
+            }
+        }
+
+        function checkAnswers() {
+            clearInterval(timerInterval);
+            let correctCount = 0;
+
+            verbs.forEach((verb, index) => {
+                const userAnswer = document.getElementById(`answer-${index}`).value.trim();
+                const questionDiv = document.getElementById(`answer-${index}`).parentElement;
+                const correctAnswerDiv = document.getElementById(`correct-${index}`);
+
+                if (userAnswer.toLowerCase() === verb.participle.toLowerCase()) {
+                    correctCount++;
+                    questionDiv.style.color = '#28a745';
+                } else {
+                    questionDiv.style.color = '#dc3545';
+                    correctAnswerDiv.style.display = 'block';
+                }
+            });
+
+            score = correctCount * 10;
+            updateScore();
+
+            if (correctCount === verbs.length) {
+                messageDisplay.textContent = 'Congratulations! You answered all correctly!';
+                messageDisplay.classList.remove('error');
+            } else {
+                messageDisplay.textContent = `Game Over! You got ${correctCount} out of ${verbs.length} correct.`;
+                messageDisplay.classList.add('error');
+            }
+        }
+
+        startGame();
+    </script>
+</body>
+</html>
